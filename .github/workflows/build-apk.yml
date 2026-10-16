@@ -2,6 +2,9 @@ name: Build Yalla Habibi APK
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -17,16 +20,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Prepare Android SDK
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: '12266719'
 
       - name: Accept Android SDK licenses
-        shell: bash
-        run: |
-          set +o pipefail
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
+        run: yes | sdkmanager --licenses
 
       - name: Build APK
         run: |
@@ -37,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: yalla-habibi-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk
