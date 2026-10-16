@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -31,24 +31,21 @@ jobs:
             "platforms;android-35" \
             "build-tools;35.0.0"
 
-      - name: Inspect Android project ZIP
+      - name: Extract Android project
         run: |
-          echo "Repository files:"
-          ls -la
-
-          echo "Checking ZIP archive:"
-          unzip -l Yalla_Habibi_Android_Project.zip
-
           mkdir -p extracted_project
           unzip -q Yalla_Habibi_Android_Project.zip -d extracted_project
+          echo "Project files:"
+          ls -la extracted_project/yalla_habibi_android
 
-          echo "Extracted project files:"
-          find extracted_project -maxdepth 5 -type f | head -200
+      - name: Build APK
+        working-directory: extracted_project/yalla_habibi_android
+        run: |
+          gradle assembleDebug
 
-          echo "Searching for Gradle wrapper:"
-          find extracted_project -type f -name gradlew
-
-          echo "Searching for Android Gradle build files:"
-          find extracted_project -type f \
-            \( -name build.gradle -o -name build.gradle.kts \
-            -o -name settings.gradle -o -name settings.gradle.kts \)
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: yalla-habibi-apk
+          path: extracted_project/yalla_habibi_android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
