@@ -31,43 +31,24 @@ jobs:
             "platforms;android-35" \
             "build-tools;35.0.0"
 
-            - name: Check project files
+      - name: Inspect Android project ZIP
         run: |
-          echo "Files in repository root:"
+          echo "Repository files:"
           ls -la
+
+          echo "Checking ZIP archive:"
+          unzip -l Yalla_Habibi_Android_Project.zip
+
+          mkdir -p extracted_project
+          unzip -q Yalla_Habibi_Android_Project.zip -d extracted_project
+
+          echo "Extracted project files:"
+          find extracted_project -maxdepth 5 -type f | head -200
+
           echo "Searching for Gradle wrapper:"
-          find . -name gradlew -type f
-          echo "Searching for Gradle build files:"
-          find . -maxdepth 4 \( -name build.gradle -o -name build.gradle.kts -o -name settings.gradle -o -name settings.gradle.kts \) -type f
+          find extracted_project -type f -name gradlew
 
-            - name: Check project files
-        run: |
-          echo "Files in repository root:"
-          ls -la
-          echo "Searching for Gradle wrapper:"
-          find . -name gradlew -type f
-          echo "Searching for Gradle build files:"
-          find . -maxdepth 4 \( -name build.gradle -o -name build.gradle.kts -o -name settings.gradle -o -name settings.gradle.kts \) -type f
-
-           - name: Build APK
-        run: |
-          echo "Checking project files..."
-          ls -la
-          echo "Searching for Gradle wrapper..."
-          find . -name gradlew -type f
-          echo "Searching for Gradle build files..."
-          find . -maxdepth 4 \( -name build.gradle -o -name build.gradle.kts -o -name settings.gradle -o -name settings.gradle.kts \) -type f
-
-          if [ -f gradlew ]; then
-            chmod +x gradlew
-            ./gradlew assembleDebug
-          else
-            echo "Gradle wrapper not found in the repository root."
-            exit 1
-          fi
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: yalla-habibi-apk
-          path: app/build/outputs/apk/debug/*.apk
+          echo "Searching for Android Gradle build files:"
+          find extracted_project -type f \
+            \( -name build.gradle -o -name build.gradle.kts \
+            -o -name settings.gradle -o -name settings.gradle.kts \)
