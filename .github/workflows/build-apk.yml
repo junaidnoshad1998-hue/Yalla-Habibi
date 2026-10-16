@@ -31,10 +31,36 @@ jobs:
             "platforms;android-35" \
             "build-tools;35.0.0"
 
+            - name: Check project files
+        run: |
+          echo "Files in repository root:"
+          ls -la
+          echo "Searching for Gradle wrapper:"
+          find . -name gradlew -type f
+          echo "Searching for Gradle build files:"
+          find . -maxdepth 4 \( -name build.gradle -o -name build.gradle.kts -o -name settings.gradle -o -name settings.gradle.kts \) -type f
+
+            - name: Check project files
+        run: |
+          echo "Files in repository root:"
+          ls -la
+          echo "Searching for Gradle wrapper:"
+          find . -name gradlew -type f
+          echo "Searching for Gradle build files:"
+          find . -maxdepth 4 \( -name build.gradle -o -name build.gradle.kts -o -name settings.gradle -o -name settings.gradle.kts \) -type f
+
       - name: Build APK
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+            ./gradlew assembleDebug
+          elif [ -f gradlew.bat ]; then
+            echo "Only the Windows Gradle wrapper was found."
+            exit 1
+          else
+            echo "Gradle wrapper not found. Check the project files above."
+            exit 1
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
