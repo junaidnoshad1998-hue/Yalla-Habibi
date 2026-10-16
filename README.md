@@ -1,6 +1,6 @@
 # Yalla Habibi Android App
 
-A mobile-first restaurant ordering app branded in navy and gold, with menu categories, cart quantities, total calculation, and WhatsApp order handoff to **+92 325 8877188**. The logo is cropped from the supplied menu artwork. Menu prices reflect the supplied menu image.
+A mobile-first restaurant ordering app branded in navy and gold, with menu categories, cart quantities, total calculation, and WhatsApp order handoff to **+92 325 8871788**. The logo is cropped from the supplied menu artwork. Menu prices reflect the supplied menu image.
 
 ## Build an APK (Android Studio)
 1. Install Android Studio (current stable) and Android SDK Platform 35.
